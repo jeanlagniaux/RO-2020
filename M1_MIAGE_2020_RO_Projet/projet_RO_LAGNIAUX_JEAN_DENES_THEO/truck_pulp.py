@@ -9,7 +9,7 @@ vous devez indiquer un chemin relatif par rapport à votre
 fichier `test.py`
 """
 # Pour charger un module dans le dossier du projet
-import projet_RO_NOM1_PRENOM1_NOM2_PRENOM2.module as mod
+import projet_RO_LAGNIAUX_JEAN_DENES_THEO.module as mod
 # ...
 def solve_truck_problem(file_path):
 # Faire quelque chose ici avec l'argument `file_path`
