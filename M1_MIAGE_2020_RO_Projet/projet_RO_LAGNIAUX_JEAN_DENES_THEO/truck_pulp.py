@@ -16,11 +16,12 @@ def solve_truck_problem(file_path):
 # qui est un chemin de fichier
 # ...
 # La fonction retournera :
-# - la valeur de la fonction objectif égale aux bénéfices
-# de l'entreprise si le problème est resolvable,
-# sinon `None`. Le type de retour sera un "float" ;
-# - un dictionnaire,
-# où les clefs sont les routes et les valeurs associées
-# sont les quantités de marchandises qui les traversent ;
-# - ce que vous voulez en plus si besoin.
+
+#       - la valeur de la fonction objectif égale aux bénéfices
+#           de l'entreprise si le problème est resolvable,
+#           sinon `None`. Le type de retour sera un "float" ;
+#       - un dictionnaire,
+#           où les clefs sont les routes et les valeurs associées
+#           sont les quantités de marchandises qui les traversent ;
+#       - ce que vous voulez en plus si besoin.
 return optval, roads_qty #, ...
