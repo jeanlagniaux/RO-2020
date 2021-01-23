@@ -40,35 +40,25 @@ def extract_adm_cells(file_path):
                     print('IN ROADS BLOCK')
                     print(line_split)
                     s, e, cap, gas, tax = line_split
-                    addRoad(graph, s, e)
+                    addRoad(graph, s, e, cap, gas, tax)
                 else:
                     exit(f'ERROR: line = {line}')
     return graph
 
-def addRoad(graph, s, e):
+def addRoad(graph, s, e, cap, gas, tax):
     start = f'{s}'
     end = f'{e}'
-    graph.add_edge(start, end)
-
-
-def add_admissible(graph, i, j):
-    i_id = f'R{i}'
-    j_id = f'C{j}'
-    graph.add_edge(i_id, j_id)
-
-def add_ri(graph, i, ri):
-    i_id = f'R{i}'
-    graph.add_edge(SOURCE, i_id, capacity = ri)
-    for j_id in graph.successors(i_id):
-        graph[i_id][j_id]['capacity'] = ri
-
-def add_cj(graph, j, cj):
-    j_id = f'C{j}'
-    graph.add_edge(j_id, TARGET, capacity = cj)
-
+    RoadCap = f'{cap}'
+    RoadGas = f'{gas}'
+    RoadTax = f'{tax}'
+    graph.add_edge(start, end, capacity = RoadCap, Gas = RoadGas, Tax = RoadTax)
 
 graph = extract_adm_cells(file_path)
 print('')
 print(graph.nodes())
+print('')
+listG = list(graph.edges())
+for value in listG:
+    print(value, graph.edges[value[0], value[1]])
 nx.draw(graph)
 plt.show()
