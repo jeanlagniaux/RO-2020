@@ -28,6 +28,15 @@ def solve_truck_problem(file_path):
 #           où les clefs sont les routes et les valeurs associées
 #           sont les quantités de marchandises qui les traversent ;
 #       - ce que vous voulez en plus si besoin.
+
+
+    prob = pl.LpProblem(name='benefice', sense=pl.LpMaximize)
+
+
+
+
+
+
     return optval, roads_qty #, ...
 
 # ---------------------------------------------------------------------------------------------------#
