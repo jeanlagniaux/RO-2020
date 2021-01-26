@@ -8,8 +8,14 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-file_path = 'truck_instance_base.data'
-#file_path = 'data\truck_instance_less_customers.data'
+path = Path(__file__)
+print(path)
+newpath = path.parent.parent.resolve()
+dataDir = newpath / 'data'
+InstancePath = dataDir / 'truck_instance_base.data'
+
+file_path = InstancePath
+#file_path = path.absolute()
 
 def extract_adm_cells(file_path):
     graph = nx.DiGraph()

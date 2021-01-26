@@ -9,6 +9,6 @@ DATA_DIR = THIS_FILE_DIR / 'data'
 if __name__ == '__main__':
 # ...
 # instancier `file_path`
-    instance_path = DATA_DIR / 'quelquechose.data'
+    instance_path = DATA_DIR / 'truck_instance_base.data'
     optval, roads_qty  = solve_truck_problem(instance_path)
 # ...
