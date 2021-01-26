@@ -9,7 +9,7 @@ vous devez indiquer un chemin relatif par rapport à votre
 fichier `test.py`
 """
 # Pour charger un module dans le dossier du projet
-import projet_RO_LAGNIAUX_JEAN_DENES_THEO.module as mod
+#import projet_RO_LAGNIAUX_JEAN_DENES_THEO.module as mod
 import pulp as pl
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -40,14 +40,15 @@ def solve_truck_problem(file_path):
     road_cap = pl.LpVariable('road capacity', lowBound=0, cat=pl.LpInteger)
     customer_req = pl.LpVariable('customer request', lowBound=0, cat=pl.LpInteger)
     deposit_stk = pl.LpVariable('deposit stock', lowBound=0, cat=pl.LpInteger)
-    deposit_stk = pl.LpVariable('deposit stock', lowBound=0, cat=pl.LpInteger)
     truck_cap = pl.LpVariable('truck capacity', lowBound=0, cat=pl.LpInteger)
     truck_stk = pl.LpVariable('truck stock on road', lowBound=0, cat=pl.LpInteger)
 
-    
+
     # ------------------------------------------------------------------------ #
     # The objective function
     # ------------------------------------------------------------------------ #
+    prob += pl.LpMaximize(pl.lpSum(1000*customer_req*customer_i)-pl.lpSum(road_i*road_cap))
+
 
 
 
