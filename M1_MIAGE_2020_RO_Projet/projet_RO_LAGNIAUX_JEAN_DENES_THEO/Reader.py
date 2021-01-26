@@ -1,7 +1,7 @@
 #! /bin/env python3.8
 # -*- coding=utf-8 -*-
 
-"""TP5"""
+"""Projet"""
 
 import pulp as pl
 import networkx as nx
@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 file_path = 'truck_instance_base.data'
+#file_path = 'data\truck_instance_less_customers.data'
 
 def extract_adm_cells(file_path):
     graph = nx.DiGraph()
@@ -16,14 +17,12 @@ def extract_adm_cells(file_path):
     with open (file_path, 'r') as f_in:
         header = f_in.readline()
         splitHead = header.split()
-
         LimCam = splitHead[0]
         start = splitHead[1]
         n_clientsuppr = splitHead[2]
         n_depsuppr = splitHead[3]
-
-        print('LimCam =', LimCam, ' start =',start, ' n_clientsuppr = ', n_clientsuppr, ' n_depsuppr =',n_depsuppr )
-        print('')
+        valHead = (LimCam, start,  n_clientsuppr , n_depsuppr)
+        #print('LimCam =', LimCam, ' start =',start, ' n_clientsuppr = ', n_clientsuppr, ' n_depsuppr =',n_depsuppr)
         block = ''
         for line in f_in:
                 line_split = line.split()
@@ -32,8 +31,6 @@ def extract_adm_cells(file_path):
                 elif line_split[0] == '}':
                     block = ''
                 elif block == 'ENTITIES':
-                    #print('IN ENTITES BLOCK')
-                    #print(line_split)
                     s, type, stock = line_split
                     stock = int(stock)
                     addEntity(graph, s, type, stock)
@@ -45,7 +42,7 @@ def extract_adm_cells(file_path):
                     addRoad(graph, s, e, cap, gas, tax)
                 else:
                     exit(f'ERROR: line = {line}')
-    return graph
+    return graph, valHead
 
 def addEntity(graph, s, type, stock):
     typeEntity = F'{type}'
@@ -60,7 +57,10 @@ def addRoad(graph, s, e, cap, gas, tax):
     RoadTax = tax
     graph.add_edge(start, end, capacity = RoadCap, Gas = RoadGas, Tax = RoadTax)
 
-graph = extract_adm_cells(file_path)
+graph, val = extract_adm_cells(file_path)
+print('')
+print('LimCam, start, n_clientsuppr, n_depsuppr', val)
+print('')
 print('=== les noeuds dans notre graph ===')
 print('')
 listN = list(graph.nodes())
