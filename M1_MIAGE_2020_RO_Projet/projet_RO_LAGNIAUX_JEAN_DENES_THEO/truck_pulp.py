@@ -13,7 +13,7 @@ fichier `test.py`
 import pulp as pl
 import networkx as nx
 import matplotlib.pyplot as plt
-from TP5 import extract_adm_cells, SOURCE, TARGET
+#from TP5 import extract_adm_cells, SOURCE, TARGET
 # ...
 def solve_truck_problem(file_path):
 # Faire quelque chose ici avec l'argument `file_path`
