@@ -15,7 +15,11 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from Reader import extract_adm_cells
 # ...
-def solve_truck_problem(graph):
+
+# ---------------------------------------------------------------------------------------------------#
+#                             ===== TEMPLATE PROJET ====                                             #
+# ---------------------------------------------------------------------------------------------------#
+def def_truck_problem(graph):
 # Faire quelque chose ici avec l'argument `file_path`
 # qui est un chemin de fichier
 # ...
@@ -29,11 +33,16 @@ def solve_truck_problem(graph):
 #           sont les quantités de marchandises qui les traversent ;
 #       - ce que vous voulez en plus si besoin.
 
+    # ------------------------------------------------------------------------ #
+    # Linear problem with minimization or maximization
+    # ------------------------------------------------------------------------ #
 
     prob = pl.LpProblem(name='benefice', sense=pl.LpMaximize)
+
     # ------------------------------------------------------------------------ #
     # The variables
     # ------------------------------------------------------------------------ #
+
     road_i = pl.LpVariable.dicts('road', graph.edges(), cat=pl.LpBinary)
     customer_i = pl.LpVariable.dicts('customer', graph.nodes(), cat=pl.LpBinary)
 
@@ -49,11 +58,67 @@ def solve_truck_problem(graph):
     # ------------------------------------------------------------------------ #
     prob += pl.LpMaximize(pl.lpSum(1000*customer_req*customer_i)-pl.lpSum(road_i*road_cap))
 
+    # ------------------------------------------------------------------------ #
+    # The constraints
+    # ------------------------------------------------------------------------ #
 
+    prob += pl.lpSum(truck_stk <= road_cap)
+    prob += pl.lpSum(road_i) <= 1
+    prob += pl.lpSum(truck_cap <= entete[0])
+
+    return prob
 
 
 
     return optval, roads_qty #, ...
+
+
+
+# ============================================================================ #
+#                               SOLVE WITH DATA                                #
+# ============================================================================ #
+
+
+
+def solve_truck_problem():
+
+    path = Path(__file__)
+    print(path)
+    newpath = path.parent.parent.resolve()
+    dataDir = newpath / 'data'
+    InstancePath = dataDir / 'truck_instance_base.data'
+    filePath = InstancePath
+
+    graph, entete = extract_adm_cells(filePath)
+    prob, d_edge_flow = set_max_flow_model(graph)
+
+    prob.solve(pl.PULP_CBC_CMD(logPath='./CBC_max_flow.log'))
+    # ------------------------------------------------------------------------ #
+    # Print the solver output
+    # ------------------------------------------------------------------------ #
+    print()
+    print('solve_max_flow')
+    print()
+    print(f'Status:\n{pl.LpStatus[prob.status]}')
+
+    print()
+    print('-' * 40)
+    print()
+
+    # Each of the variables is printed with it's resolved optimum value
+    for v in prob.variables():
+        print(v.name, '=', v.varValue)
+
+    print()
+
+if __name__ == '__main__':
+    solve_truck_problem()
+
+
+
+
+
+
 
 # ---------------------------------------------------------------------------------------------------#
 #                             ===== TEMPLATE TP5 ====                                                #
@@ -111,32 +176,7 @@ def calcul_A_mult_PHI(graph, v, d_edge_flow):
 # ============================================================================ #
 #                               SOLVE WITH DATA                                #
 # ============================================================================ #
-def set_min_cut_model(graph):
 
-    prob = pl.LpProblem(name='max_flow', sense=pl.LpMinimize)
-
-    d_edge_flow = pl.LpVariable.dicts('flow', graph.edges(),
-                                      lowBound=0, cat=pl.LpInteger)
-    # ------------------------------------------------------------------------ #
-    # The variables
-    # ------------------------------------------------------------------------ #
-    d_y = pl.LpVariable.dicts('y', graph.edges(), cat=pl.LpBinary)
-    d_x = pl.LpVariable.dicts('x', graph.nodes(), cat=pl.LpBinary)
-
-    # ------------------------------------------------------------------------ #
-    # The objective function
-    # ------------------------------------------------------------------------ #
-    prob += pl.lpSum(d_y[e] * graph.edges()[e]['capacity']
-                     for e in graph.edges()), 'minimize_the_cut'
-
-    # x_u - x_v + y_uv >= 0 pour tout arc (u,v)
-    for (u,v) in graph.edges():
-        prob += d_x[u] - d_x[v] + d_y[(u,v)] >= 0, f'C1_{u}_{v}'
-
-    #x_t - x_s >= 1
-    prob += d_x[TARGET] - d_x[SOURCE] >= 1, 'C2'
-
-    return prob, d_edge_flow
 
 
 def solve_max_flow():
