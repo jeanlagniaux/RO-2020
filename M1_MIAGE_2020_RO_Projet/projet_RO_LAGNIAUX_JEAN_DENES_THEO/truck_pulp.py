@@ -13,13 +13,14 @@ fichier `test.py`
 import pulp as pl
 import networkx as nx
 import matplotlib.pyplot as plt
+from pathlib import Path
 from Reader import extract_adm_cells
 # ...
 
 # ---------------------------------------------------------------------------------------------------#
 #                             ===== TEMPLATE PROJET ====                                             #
 # ---------------------------------------------------------------------------------------------------#
-def def_truck_problem(graph):
+def def_truck_problem(graph, entete):
 # Faire quelque chose ici avec l'argument `file_path`
 # qui est un chemin de fichier
 # ...
@@ -66,10 +67,9 @@ def def_truck_problem(graph):
     prob += pl.lpSum(road_i) <= 1
     prob += pl.lpSum(truck_cap <= entete[0])
 
+    # contrainte principale de MAJ des stock en fonction du passage chez le client ou dans un dépôt
+
     return prob
-
-
-
     return optval, roads_qty #, ...
 
 
@@ -77,8 +77,6 @@ def def_truck_problem(graph):
 # ============================================================================ #
 #                               SOLVE WITH DATA                                #
 # ============================================================================ #
-
-
 
 def solve_truck_problem():
 
@@ -90,7 +88,7 @@ def solve_truck_problem():
     filePath = InstancePath
 
     graph, entete = extract_adm_cells(filePath)
-    prob, d_edge_flow = set_max_flow_model(graph)
+    prob, d_edge_flow = def_truck_problem(graph, entete)
 
     prob.solve(pl.PULP_CBC_CMD(logPath='./CBC_max_flow.log'))
     # ------------------------------------------------------------------------ #
