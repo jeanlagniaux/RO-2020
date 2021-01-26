@@ -31,8 +31,23 @@ def solve_truck_problem(file_path):
 
 
     prob = pl.LpProblem(name='benefice', sense=pl.LpMaximize)
+    # ------------------------------------------------------------------------ #
+    # The variables
+    # ------------------------------------------------------------------------ #
+    road_i = pl.LpVariable.dicts('road', graph.edges(), cat=pl.LpBinary)
+    customer_i = pl.LpVariable.dicts('customer', graph.nodes(), cat=pl.LpBinary)
 
+    road_cap = pl.LpVariable('road capacity', lowBound=0, cat=pl.LpInteger)
+    customer_req = pl.LpVariable('customer request', lowBound=0, cat=pl.LpInteger)
+    deposit_stk = pl.LpVariable('deposit stock', lowBound=0, cat=pl.LpInteger)
+    deposit_stk = pl.LpVariable('deposit stock', lowBound=0, cat=pl.LpInteger)
+    truck_cap = pl.LpVariable('truck capacity', lowBound=0, cat=pl.LpInteger)
+    truck_stk = pl.LpVariable('truck stock on road', lowBound=0, cat=pl.LpInteger)
 
+    
+    # ------------------------------------------------------------------------ #
+    # The objective function
+    # ------------------------------------------------------------------------ #
 
 
 
