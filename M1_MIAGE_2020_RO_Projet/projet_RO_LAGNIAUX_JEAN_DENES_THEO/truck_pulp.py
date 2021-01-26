@@ -13,9 +13,9 @@ fichier `test.py`
 import pulp as pl
 import networkx as nx
 import matplotlib.pyplot as plt
-#from TP5 import extract_adm_cells, SOURCE, TARGET
+from Reader import extract_adm_cells
 # ...
-def solve_truck_problem(file_path):
+def solve_truck_problem(graph):
 # Faire quelque chose ici avec l'argument `file_path`
 # qui est un chemin de fichier
 # ...
@@ -77,7 +77,8 @@ def set_max_flow_model(graph):
     prob += flow, 'maximize_the_flow'
 
     for v in graph.nodes():
-        prob += calcul_D_mult_PHI_0(v, flow) \
+        prob += calcul_D_mu
+        t_PHI_0(v, flow) \
         + calcul_A_mult_PHI(graph, v, d_edge_flow) == 0,\
          F'flow_conservation_{v}'
 
@@ -140,7 +141,14 @@ def set_min_cut_model(graph):
 
 def solve_max_flow():
 
-    graph = extract_adm_cells('admissible_cells.info')
+    path = Path(__file__)
+    print(path)
+    newpath = path.parent.parent.resolve()
+    dataDir = newpath / 'data'
+    InstancePath = dataDir / 'truck_instance_base.data'
+    filePath = InstancePath
+
+    graph, entete = extract_adm_cells(filePath)
     prob, d_edge_flow = set_max_flow_model(graph)
 
     prob.solve(pl.PULP_CBC_CMD(logPath='./CBC_max_flow.log'))
