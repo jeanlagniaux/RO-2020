@@ -28,7 +28,6 @@ def extract_adm_cells(file_path):
         n_clientsuppr = splitHead[2]
         n_depsuppr = splitHead[3]
         valHead = (LimCam, start,  n_clientsuppr , n_depsuppr)
-        #print('LimCam =', LimCam, ' start =',start, ' n_clientsuppr = ', n_clientsuppr, ' n_depsuppr =',n_depsuppr)
         block = ''
         for line in f_in:
                 line_split = line.split()
@@ -79,4 +78,4 @@ listG = list(graph.edges())
 for value in listG:
     print(value, graph.edges[value[0], value[1]])
 nx.draw(graph)
-plt.show()
+nx.write_graphml(graph, 'gaphe_test2.graphml')
