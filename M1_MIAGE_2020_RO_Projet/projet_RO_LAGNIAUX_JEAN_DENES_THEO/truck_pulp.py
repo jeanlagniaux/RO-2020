@@ -83,9 +83,10 @@ def def_truck_problem(graph, entete):
 
 
     # un client doit etre servi en totalité
+    prob += pl.lpSum()
 
     prob += pl.lpSum(nbDepotLivrable <= nbDeDepot)
-    prob += plSum(nbClientLivrable <= nbDeClient)
+    prob += pl.lpSum(nbClientLivrable <= nbDeClient)
 
 
 
