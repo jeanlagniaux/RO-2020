@@ -50,9 +50,14 @@ def def_truck_problem(graph, entete):
     road_cap = pl.LpVariable('road capacity', lowBound=0, cat=pl.LpInteger)
     customer_req = pl.LpVariable('customer request', lowBound=0, cat=pl.LpInteger)
     deposit_stk = pl.LpVariable('deposit stock', lowBound=0, cat=pl.LpInteger)
-    truck_cap = pl.LpVariable('truck capacity', lowBound=0, cat=pl.LpInteger)
+    truck_cap = pl.LpVariable('truck capacity', lowBound=0, cat=pl.LpInteger) # = entete[0]
     truck_stk = pl.LpVariable('truck stock on road', lowBound=0, cat=pl.LpInteger)
 
+    nbDeDepot = pl.LpVariable('Nb de dépot total dans le systeme', lowBound=0, cat=pl.LpInteger)
+    nbDepotLivrable = pl.LpVariable('nb de depot que lon va pouvoir livrer', lowBound=0, cat=pl.LpInteger)
+
+    nbDeClient = pl.LpVariable('Nb de client total dans le systeme', lowBound=0, cat=pl.LpInteger)
+    nbClientLivrable = pl.LpVariable('nb de client que lon va pouvoir livrer', lowBound=0, cat=pl.LpInteger)
 
     # ------------------------------------------------------------------------ #
     # The objective function
@@ -63,11 +68,26 @@ def def_truck_problem(graph, entete):
     # The constraints
     # ------------------------------------------------------------------------ #
 
+    # stk du camion inf à la capacité de la route
     prob += pl.lpSum(truck_stk <= road_cap)
-    prob += pl.lpSum(road_i) <= 1
-    prob += pl.lpSum(truck_cap <= entete[0])
+    # route pas encore emprunté
+    prob += pl.lpSum(road_i) < 1
+    #stk camion <= capacité du camion
+    prob += pl.lpSum(truck_stk <= entete[0])
 
-    # contrainte principale de MAJ des stock en fonction du passage chez le client ou dans un dépôt
+    #   on divise la contrainte en 2 contraintes relativement similaire.
+    #charger
+    prob += pl.lpSum(deposit_stk <= 0)
+    #dechager
+    prob += pl.lpSum(customer_req >= 0)
+
+
+    # un client doit etre servi en totalité
+
+    prob += pl.lpSum(nbDepotLivrable <= nbDeDepot)
+    prob += plSum(nbClientLivrable <= nbDeClient)
+
+
 
     return prob
     return optval, roads_qty #, ...
@@ -100,7 +120,7 @@ def solve_truck_problem():
     print(f'Status:\n{pl.LpStatus[prob.status]}')
 
     print()
-    print('-' * 40)
+    print('-')
     print()
 
     # Each of the variables is printed with it's resolved optimum value

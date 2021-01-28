@@ -8,15 +8,15 @@
   <graph edgedefault="directed">
     <node id="D1">
       <data key="d0">depot</data>
-      <data key="d1">10</data>
+      <data key="d1">-10</data>
     </node>
     <node id="D2">
       <data key="d0">depot</data>
-      <data key="d1">3</data>
+      <data key="d1">-3</data>
     </node>
     <node id="D3">
       <data key="d0">depot</data>
-      <data key="d1">5</data>
+      <data key="d1">-5</data>
     </node>
     <node id="C1">
       <data key="d0">customer</data>
