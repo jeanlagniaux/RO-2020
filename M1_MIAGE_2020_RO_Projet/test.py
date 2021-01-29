@@ -11,4 +11,7 @@ if __name__ == '__main__':
     instance_path = DATA_DIR / 'truck_instance_base.data'
     print(instance_path)
     optval, roads_qty  = solve_truck_problem(instance_path)
-# ...
+    #if isinstance(optval, float):
+        #print('la valeur de la fonction objectif égale aux bénéfices de lentreprise est = ', optval)
+    #else:
+        #print('le programme na pas trouvé de solution au problem')
