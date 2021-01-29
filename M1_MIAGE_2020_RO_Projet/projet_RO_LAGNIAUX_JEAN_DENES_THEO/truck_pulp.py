@@ -32,8 +32,15 @@ def def_truck_problem(graph, entete):
     # ------------------------------------------------------------------------ #
     # The variables
     # ------------------------------------------------------------------------ #
+    road = {}
+    for (u, v) in graph.edges():
+        road[(v, u)] = pl.LpVariable(f'x_{v}_{u}', cat=pl.LpBinary)
 
-    road_i = pl.LpVariable.dicts('road', graph.edges(), cat=pl.LpBinary)
+    customer = {}
+    for node in graph.nodes():
+        if graph.nodes[node]['type'] == 'customer':
+        customer[i] = pl.LpVariable(f'{node}', cat=pl.LpBinary)
+
     customer_i = pl.LpVariable.dicts('customer', graph.nodes(), cat=pl.LpBinary)
 
     road_cap = pl.LpVariable('road capacity', lowBound=0, cat=pl.LpInteger)

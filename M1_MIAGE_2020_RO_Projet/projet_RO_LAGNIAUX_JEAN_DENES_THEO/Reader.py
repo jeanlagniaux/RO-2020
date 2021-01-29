@@ -70,15 +70,17 @@ graph, val = extract_graph(file_path)
 #print('')
 #print('=== les noeuds dans notre graph ===')
 #print('')
-listN = list(graph.nodes())
-#for value in listN:
-    #print(value, graph.nodes[value])
+node = {}
+for value in graph.nodes():
+    node = graph.nodes[value]['type']
+    print(value, node)
+    if graph.nodes[value]['type'] == 'customer':
+        print('OK')
 #print('')
 #print('=== la liste des arc dans notre graphe ===')
 #print('')
-listG = list(graph.edges())
-#for value in listG:
-    #print(value, graph.edges[value[0], value[1]])
+for value in graph.edges():
+    print(value, graph.edges[value[0], value[1]])
 nx.draw(graph)
 #plt.show()
 nx.write_graphml(graph, 'projet_RO_LAGNIAUX_JEAN_DENES_THEO\output_files\graphe_init.graphml')
