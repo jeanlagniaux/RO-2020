@@ -69,24 +69,23 @@ def def_truck_problem(graph, entete):
     # ------------------------------------------------------------------------ #
 
     # stk du camion inf à la capacité de la route
-    prob += pl.lpSum(truck_stk <= road_cap)
+    prob += truck_stk <= road_cap
     # route pas encore emprunté
-    prob += road_i < 1
+    prob += pl.lpSum(road_i) < 1
     #stk camion <= capacité du camion
-    prob += pl.lpSum(truck_stk <= entete[0])
+    prob += truck_stk <= entete[0]
 
     #   on divise la contrainte en 2 contraintes relativement similaire.
     #charger
-    prob += pl.lpSum(deposit_stk <= 0)
+    prob += pl.lpSum(deposit_stk) <= 0
     #dechager
-    prob += pl.lpSum(customer_req >= 0)
+    prob += pl.lpSum(customer_req) >= 0
 
 
     # un client doit etre servi en totalité
-    prob += pl.lpSum()
 
-    prob += pl.lpSum(nbDepotLivrable <= nbDeDepot)
-    prob += pl.lpSum(nbClientLivrable <= nbDeClient)
+    prob += nbDepotLivrable <= nbDeDepot
+    prob += nbClientLivrable <= nbDeClient
 
 
 
