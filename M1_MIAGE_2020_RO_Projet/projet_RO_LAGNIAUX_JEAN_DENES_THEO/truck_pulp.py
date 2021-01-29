@@ -71,7 +71,7 @@ def def_truck_problem(graph, entete):
     # stk du camion inf à la capacité de la route
     prob += pl.lpSum(truck_stk <= road_cap)
     # route pas encore emprunté
-    prob += pl.lpSum(road_i) < 1
+    prob += road_i < 1
     #stk camion <= capacité du camion
     prob += pl.lpSum(truck_stk <= entete[0])
 
