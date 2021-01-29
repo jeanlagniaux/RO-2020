@@ -8,15 +8,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-path = Path(__file__)
-print(path)
-newpath = path.parent.parent.resolve()
-dataDir = newpath / 'data'
-InstancePath = dataDir / 'truck_instance_less_customers.data'
-
-file_path = InstancePath
-#file_path = path.absolute()
-
 def extract_adm_cells(file_path):
     graph = nx.DiGraph()
 
@@ -62,6 +53,17 @@ def addRoad(graph, s, e, cap, gas, tax):
     RoadTax = tax
     graph.add_edge(start, end, capacity = RoadCap, Gas = RoadGas, Tax = RoadTax)
 
+#############################  MAIN RUNNING TEST READER  #############################
+
+path = Path(__file__)
+newpath = path.parent.parent.resolve()
+dataDir = newpath / 'data'
+InstancePath = dataDir / 'truck_instance_less_customers.data'
+
+file_path = InstancePath
+
+print(file_path)
+
 graph, val = extract_adm_cells(file_path)
 print('')
 print('LimCam, start, n_clientsuppr, n_depsuppr', val)
@@ -78,5 +80,5 @@ listG = list(graph.edges())
 for value in listG:
     print(value, graph.edges[value[0], value[1]])
 nx.draw(graph)
-
+plt.show()
 nx.write_graphml(graph, 'gaphe_test2.graphml')

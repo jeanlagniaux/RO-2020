@@ -21,18 +21,6 @@ from Reader import extract_adm_cells
 #                             ===== TEMPLATE PROJET ====                                             #
 # ---------------------------------------------------------------------------------------------------#
 def def_truck_problem(graph, entete):
-# Faire quelque chose ici avec l'argument `file_path`
-# qui est un chemin de fichier
-# ...
-# La fonction retournera :
-
-#       - la valeur de la fonction objectif égale aux bénéfices
-#           de l'entreprise si le problème est resolvable,
-#           sinon `None`. Le type de retour sera un "float" ;
-#       - un dictionnaire,
-#           où les clefs sont les routes et les valeurs associées
-#           sont les quantités de marchandises qui les traversent ;
-#       - ce que vous voulez en plus si besoin.
 
     # ------------------------------------------------------------------------ #
     # Linear problem with minimization or maximization
@@ -99,7 +87,17 @@ def def_truck_problem(graph, entete):
 #                               SOLVE WITH DATA                                #
 # ============================================================================ #
 
-def solve_truck_problem():
+def solve_truck_problem(file_path):
+
+
+    # La fonction retournera :
+    #       - la valeur de la fonction objectif égale aux bénéfices
+    #           de l'entreprise si le problème est resolvable,
+    #           sinon `None`. Le type de retour sera un "float" ;
+    #       - un dictionnaire,
+    #           où les clefs sont les routes et les valeurs associées
+    #           sont les quantités de marchandises qui les traversent ;
+    #       - ce que vous voulez en plus si besoin.
 
     path = Path(__file__)
     print(path)
@@ -132,6 +130,10 @@ def solve_truck_problem():
 
 if __name__ == '__main__':
     solve_truck_problem()
+
+
+
+
 
 
 
