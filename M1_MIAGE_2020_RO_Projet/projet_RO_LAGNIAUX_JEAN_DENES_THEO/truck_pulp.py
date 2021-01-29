@@ -14,7 +14,8 @@ import pulp as pl
 import networkx as nx
 import matplotlib.pyplot as plt
 from pathlib import Path
-from Reader import extract_adm_cells
+from projet_RO_LAGNIAUX_JEAN_DENES_THEO.reader import extract_graph
+
 # ...
 
 # ---------------------------------------------------------------------------------------------------#
@@ -105,7 +106,7 @@ def solve_truck_problem(file_path):
     InstancePath = dataDir / 'truck_instance_base.data'
     filePath = InstancePath
 
-    graph, entete = extract_adm_cells(filePath)
+    graph, entete = extract_graph(filePath)
     prob, d_edge_flow = def_truck_problem(graph, entete)
 
     prob.solve(pl.PULP_CBC_CMD(logPath='./CBC_max_flow.log'))

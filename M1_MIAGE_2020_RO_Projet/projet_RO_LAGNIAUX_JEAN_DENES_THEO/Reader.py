@@ -8,7 +8,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-def extract_adm_cells(file_path):
+def extract_graph(file_path):
     graph = nx.DiGraph()
 
     with open (file_path, 'r') as f_in:
@@ -64,21 +64,21 @@ file_path = InstancePath
 
 print(file_path)
 
-graph, val = extract_adm_cells(file_path)
-print('')
-print('LimCam, start, n_clientsuppr, n_depsuppr', val)
-print('')
-print('=== les noeuds dans notre graph ===')
-print('')
+graph, val = extract_graph(file_path)
+#print('')
+#print('LimCam, start, n_clientsuppr, n_depsuppr', val)
+#print('')
+#print('=== les noeuds dans notre graph ===')
+#print('')
 listN = list(graph.nodes())
-for value in listN:
-    print(value, graph.nodes[value])
-print('')
-print('=== la liste des arc dans notre graphe ===')
-print('')
+#for value in listN:
+    #print(value, graph.nodes[value])
+#print('')
+#print('=== la liste des arc dans notre graphe ===')
+#print('')
 listG = list(graph.edges())
-for value in listG:
-    print(value, graph.edges[value[0], value[1]])
+#for value in listG:
+    #print(value, graph.edges[value[0], value[1]])
 nx.draw(graph)
-plt.show()
-nx.write_graphml(graph, 'gaphe_test2.graphml')
+#plt.show()
+nx.write_graphml(graph, 'output_files\graphe_init.graphml')
