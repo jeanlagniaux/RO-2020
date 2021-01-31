@@ -64,7 +64,7 @@ file_path = InstancePath
 
 print(file_path)
 
-graph, val = extract_graph(file_path)
+graph, entete = extract_graph(file_path)
 #print('')
 #print('LimCam, start, n_clientsuppr, n_depsuppr', val)
 #print('')
@@ -118,7 +118,5 @@ for val in nodes:
     else:
         list_customer.append(val)
 
-print(list_depot)
 
-for v in list_depot:
-    print(graph.nodes[list_depot[list_depot.index(v)]]["stock"])
+print([graph.edges[u, v]['capacity'] for (u, v) in roads])

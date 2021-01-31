@@ -34,9 +34,11 @@ def def_truck_problem(graph, entete):
     # ------------------------------------------------------------------------ #
 
     roads = graph.edges()
-    roads = LpVariable("Road", cat=pl.LpBinary)
-    roads_cap = graph.edges()
-    roads_cap = LpVariable("Road capacity", lowBound=0, cat=pl.LInteger)
+    #roads = LpVariable("Road", cat=pl.LpBinary)
+    #roads_cap = graph.edges()
+    #roads_cap = LpVariable("Road capacity", lowBound=0, cat=pl.LInteger)
+
+    road_is_used = [pl.LpVariable(f'used_{u}_{v}', cat=pl.LpBinary) for (u, v) in roads]
 
     list_depot = []
     list_customer = []
@@ -47,7 +49,10 @@ def def_truck_problem(graph, entete):
         else:
             list_customer.append(val)
 
-    # get le stock d'un depot    
+    customer_is_served = [pl.LpVariable(f'served_{i}', cat=pl.LpBinary) for i in list_customer]
+    depot_is_used = [pl.LpVariable(f'used_{i}', cat=pl.LpBinary) for i in list_depot]
+
+    # get le stock d'un depot
     print(graph.nodes[list_depot[list_depot.index("D1")]]["stock"])
 
     #pas besoins car on a les information de la route sur la variable route
@@ -55,19 +60,18 @@ def def_truck_problem(graph, entete):
     #road_cap_i = pl.LpVariable('road capacity', lowBound=0, cat=pl.LpInteger)
     #customer_req = pl.LpVariable('customer request', lowBound=0, cat=pl.LpInteger)
 
-    truck_cap = pl.LpVariable('truck capacity', lowBound=0, cat=pl.LpInteger)
+    truck_cap = entete[0]
     truck_stk = pl.LpVariable('truck stock on road', lowBound=0, cat=pl.LpInteger)
 
-    nbDeDepot = pl.LpVariable('Nb de dépot total dans le systeme', lowBound=0, cat=pl.LpInteger)
-    nbDepotLivrable = pl.LpVariable('nb de depot que lon va pouvoir livrer', lowBound=0, cat=pl.LpInteger)
-
-    nbDeClient = pl.LpVariable('Nb de client total dans le systeme', lowBound=0, cat=pl.LpInteger)
-    nbClientLivrable = pl.LpVariable('nb de client que lon va pouvoir livrer', lowBound=0, cat=pl.LpInteger)
+    nbDepotLivrable = len(list_depot) - int(entete[3])
+    nbDepotLivrable = len(list_customer) - int(entete[2])
 
     # ------------------------------------------------------------------------ #
     # The objective function
     # ------------------------------------------------------------------------ #
-    prob += pl.LpMaximize(pl.lpSum(1000*customer_req[node]*customer[node])-pl.lpSum(road*road_cap[edge]))
+    prob += pl.LpMaximize(pl.lpSum(1000*([graph.nodes[list_customer[list_customer.index(cust)]]["stock"] for cust in list_customer]) * ([customer_is_served[i] for i in list_customer])) - pl.lpSum( ([road_is_used[i] for i in roads]) * ([graph.edges[u, v]['capacity'] for (u, v) in roads])))
+
+    #prob += pl.LpMaximize(pl.lpSum(1000*customer_req*customer[node])-pl.lpSum(road*road_cap[edge]))
 
     # ------------------------------------------------------------------------ #
     # The constraints
@@ -89,7 +93,6 @@ def def_truck_problem(graph, entete):
     # un client doit etre servi en totalité
     prob += nbDepotLivrable <= nbDeDepot
     prob += nbClientLivrable <= nbDeClient
-
 
 
     return prob
