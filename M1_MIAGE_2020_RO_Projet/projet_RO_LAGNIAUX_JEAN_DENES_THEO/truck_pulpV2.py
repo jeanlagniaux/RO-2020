@@ -43,12 +43,23 @@ def def_truck_problem(graph, entete):
     for i in list_customer:
         customer_need[i] = graph.nodes[i]['stock']
 
-    use_depot = LpVariable.dicts("UseDepot", list_depot, 0, 1, cat=pl.LpBinary)
-    use_customer = LpVariable.dicts("UseDepot", list_customer, 0, 1, cat=pl.LpBinary)
+    use_depot = LpVariable.dicts("Use_depot", list_depot, 0, 1, cat=pl.LpBinary)
+    use_customer = LpVariable.dicts("Served_cust", list_customer, 0, 1, cat=pl.LpBinary)
 
 
     prob += lpSum(use_customer[i] for i in list_customer) <= int(entete[2])
     prob += lpSum(use_depot[i] for i in list_depot) <= int(entete[3])
+
+    list_route = []
+    for val in graph.edges():
+        list_route.append(val)
+
+    use_road = LpVariable.dicts("Use_road", list_route, 0, 1, cat=pl.LpBinary)
+
+    dicts_route = {}
+    for i, j in graph.edges():
+        dicts_route[i,j] = {'cap' : graph.edges[i,j]['capacity'], 'cost' : graph.edges[i,j]['Gas'] + graph.edges[i,j]['Tax']}
+
 
 
     #roads = graph.edges()
