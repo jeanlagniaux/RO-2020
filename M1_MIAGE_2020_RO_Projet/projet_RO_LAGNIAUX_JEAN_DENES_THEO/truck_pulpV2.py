@@ -26,9 +26,6 @@ def def_truck_problem(graph, entete):
     # ------------------------------------------------------------------------ #
     # The variables
     # ------------------------------------------------------------------------ #
-    #roads = graph.edges()
-    #road_is_used = [pl.LpVariable(f'used_{u}_{v}', cat=pl.LpBinary) for (u, v) in roads]
-    road_is_used = pl.LpVariable.dicts('i', graph.edges(), cat=pl.LpBinary)
 
     list_depot = []
     list_customer = []
@@ -37,6 +34,21 @@ def def_truck_problem(graph, entete):
             list_depot.append(val)
         else:
             list_customer.append(val)
+
+    depot_stk = {}
+    for i in list_depot:
+        depot_stk[i] = graph.nodes[i]['stock']
+
+    customer_need = {}
+    for i in list_customer:
+        customer_need[i] = graph.nodes[i]['stock']
+
+
+
+    #roads = graph.edges()
+    #road_is_used = [pl.LpVariable(f'used_{u}_{v}', cat=pl.LpBinary) for (u, v) in roads]
+    road_is_used = pl.LpVariable.dicts('i', graph.edges(), cat=pl.LpBinary)
+
     customer_is_served = [pl.LpVariable(f'served_{i}', cat=pl.LpBinary) for i in list_customer]
     depot_is_used = [pl.LpVariable(f'used_{i}', cat=pl.LpBinary) for i in list_depot]
 

@@ -109,3 +109,22 @@ graph, entete = extract_graph(file_path)
 #print(graph.nodes[list_depot[list_depot.index("D1")]]["stock"])
 
 #print([graph.edges[u, v] for (u, v) in roads])
+
+list_depot = []
+list_customer = []
+for val in graph.nodes():
+    if val[0] == 'D':
+        list_depot.append(val)
+    else:
+        list_customer.append(val)
+
+depot_stk = {}
+for i in list_depot:
+    depot_stk[i] = graph.nodes[i]['stock']
+
+customer_need = {}
+for i in list_customer:
+    customer_need[i] = graph.nodes[i]['stock']
+
+print(depot_stk)
+print(customer_need)
