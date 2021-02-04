@@ -43,7 +43,7 @@ def def_truck_problem(graph, entete):
     for i in list_customer:
         customer_need[i] = graph.nodes[i]['stock']
 
-
+    use-var = LpVariable.dicts("UseDepot", list_depot, 0,1, cat=pl.LpBinary)
 
     #roads = graph.edges()
     #road_is_used = [pl.LpVariable(f'used_{u}_{v}', cat=pl.LpBinary) for (u, v) in roads]
