@@ -43,7 +43,13 @@ def def_truck_problem(graph, entete):
     for i in list_customer:
         customer_need[i] = graph.nodes[i]['stock']
 
-    use-var = LpVariable.dicts("UseDepot", list_depot, 0,1, cat=pl.LpBinary)
+    use_depot = LpVariable.dicts("UseDepot", list_depot, 0, 1, cat=pl.LpBinary)
+    use_customer = LpVariable.dicts("UseDepot", list_customer, 0, 1, cat=pl.LpBinary)
+
+
+    prob += lpSum(use_customer[i] for i in list_customer) <= int(entete[2])
+    prob += lpSum(use_depot[i] for i in list_depot) <= int(entete[3])
+
 
     #roads = graph.edges()
     #road_is_used = [pl.LpVariable(f'used_{u}_{v}', cat=pl.LpBinary) for (u, v) in roads]
@@ -58,7 +64,6 @@ def def_truck_problem(graph, entete):
     truck_stk_road_ = pl.LpVariable.dicts('i', graph.edges(), cat=pl.LpInteger)
 
     nbDepotLivrable = len(list_depot) - int(entete[3])
-    nbDepotLivrable = len(list_customer) - int(entete[2])
     # ------------------------------------------------------------------------ #
     # The objective function
     # ------------------------------------------------------------------------ #

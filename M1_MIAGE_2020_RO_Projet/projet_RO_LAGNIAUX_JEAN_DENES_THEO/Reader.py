@@ -128,3 +128,7 @@ for i in list_customer:
 
 print(depot_stk)
 print(customer_need)
+
+dicts_route = {}
+for i, j in graph.edges():
+    print(i,j)
