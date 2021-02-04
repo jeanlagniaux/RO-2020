@@ -62,7 +62,7 @@ InstancePath = dataDir / 'truck_instance_less_customers.data'
 
 file_path = InstancePath
 
-print(file_path)
+#print(file_path)
 
 graph, entete = extract_graph(file_path)
 #print('')
@@ -70,53 +70,42 @@ graph, entete = extract_graph(file_path)
 #print('')
 #print('=== les noeuds dans notre graph ===')
 #print('')
-node = {}
-for value in graph.nodes():
-    node = graph.nodes[value]
-    print(value, node)
-    if graph.nodes[value]['type'] == 'customer':
-        print('OK')
+#node = {}
+#for value in graph.nodes():
+#    node = graph.nodes[value]
+    #print(value, node)
+#    if graph.nodes[value]['type'] == 'customer':
+        #print('OK')
 #print('')
 #print('=== la liste des arc dans notre graphe ===')
 #print('')
 
-print('')
-print('')
+#roads = {}
+#road = {}
+#for value in graph.edges():
+    #print(value, graph.edges[value[0], value[1]])
 
-roads = {}
-road = {}
-for value in graph.edges():
-    print(value, graph.edges[value[0], value[1]])
 
-print('')
+#roads = graph.edges()
 
-roads = graph.edges()
-print(roads)
-print(type(roads))
 
-for value in roads:
-    print(value)
-
-print(graph.edges["C2", "D1"])
-
-nx.draw(graph)
+#nx.draw(graph)
 #plt.show()
 #nx.write_graphml(graph, 'projet_RO_LAGNIAUX_JEAN_DENES_THEO\output_files\graphe_init.graphml')
-print('le graph a été créer et on peut le trouve dans le fichier => output_files')
-print('')
-
-print('')
-print('')
+#print('le graph a été créer et on peut le trouve dans le fichier => output_files')
 
 
-list_depot = []
-list_customer = []
-nodes = graph.nodes()
-for val in nodes:
-    if val[0] == 'D':
-        list_depot.append(val)
-    else:
-        list_customer.append(val)
 
+#list_depot = []
+#list_customer = []
+#nodes = graph.nodes()
+#for val in nodes:
+#    if val[0] == 'D':
+#        list_depot.append(val)
+#    else:
+#        list_customer.append(val)
 
-print([graph.edges[u, v]['capacity'] for (u, v) in roads])
+# get le stock d'un depot
+#print(graph.nodes[list_depot[list_depot.index("D1")]]["stock"])
+
+#print([graph.edges[u, v] for (u, v) in roads])
