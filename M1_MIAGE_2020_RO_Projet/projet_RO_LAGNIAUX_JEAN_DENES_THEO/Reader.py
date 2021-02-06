@@ -132,6 +132,11 @@ customer_need = {}
 for i in list_customer:
     customer_need[i] = graph.nodes[i]['stock']
 
-print(customer_need['C1'])
-for c in list_customer:
-    print(customer_need[c])
+truck_stock_onRoad = {}
+for i, j in list_route:
+    truck_stock_onRoad[(i,j)] = {'nbGpu' : 0}
+print(truck_stock_onRoad)
+
+
+list_route = [val for val in graph.edges]
+print((i,j) for i,j in list_route)

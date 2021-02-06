@@ -54,20 +54,15 @@ def def_truck_problem(graph, entete):
         dicts_route[i,j] = {'cap' : graph.edges[i,j]['capacity'], 'gas' : graph.edges[i,j]['Gas'], 'tax' : graph.edges[i,j]['Tax']}
     use_road = pl.LpVariable.dicts("Use_road", list_route, 0, 1, cat=pl.LpBinary)
 
-    truck_cap = entete[0]
-
-    #truck_stk = [pl.LpVariable(f'route_{u}_{v}', lowBound=0, cat=pl.LpInteger) for (u, v) in roads]
-    truck_stk_road_ = pl.LpVariable.dicts('i', graph.edges(), cat=pl.LpInteger)
+    truck_stock_onRoad = pl.LpVariable.dicts('raod', list_route, cat=pl.LpInteger)
 
     # ------------------------------------------------------------------------ #
     # The objective function
     # ------------------------------------------------------------------------ #
-    prob += pl.lpSum(1000*([graph.nodes[list_customer[list_customer.index(cust)]]["stock"] for cust in list_customer]) * ([use_customer[i] for i in list_customer])) - pl.lpSum( ([road_is_used[i] for i in roads]) * ([graph.edges[u, v]['capacity'] for (u, v) in roads]))
-    #prob += pl.LpMaximize(pl.lpSum(1000*customer_req*customer[utilisé])-pl.lpSum(road*road_cap[edge]))
 
-    #
+    #erruer vient peut etre du fait qu'on déclare plusieur fois i , j 
 
-    prob += (1000 * le nombre de gpu vendu) -( (use_road[i] * dicts_route[use_road[i]]['gas'] for i in list_route) + ( (use_road[i] * dicts_route[use_road[i]]['tax']) * le nb de GPU qui sont passé sur la route ) )
+    prob += pl.lpSum(1000 * use_customer[c] * customer_need[c] for c in list_customer) - pl.lpSum( (use_road[(i, j)] * dicts_route[use_road[(i,j)]]['gas'] for (i, j) in list_route) + ( use_road[(i, j)] * dicts_route[use_road[[(i, j)]]['tax'] * truck_stock_onRoad[(i, j)] for (i, j) in list_route))
 
     # ------------------------------------------------------------------------ #
     # The constraints
@@ -79,24 +74,24 @@ def def_truck_problem(graph, entete):
     for d in list_depot:
         prob += use_depot[d] <= int(entete[3])
 
-    # stk du camion inf à la capacité de la route
-    for (u, v) in graph.edges():
-        prob += truck_stk_road_[(u,v)] <= road_is_used[(u,v)]['capacity']
-
-    for (u, v) in graph.edges():
-        prob += truck_cap <= truck_stk_road_[(u,v)]
-
     for (i, j) in list_route:
-        prob += road_is_used[(u,v)] <= 1
+        prob += truck_stock_onRoad[(i,j)] <= entete[0]
 
-    #   on divise la contrainte en 2 contraintes relativement similaire.
-    #charger
+    # stk du camion inf à la capacité de la route
+    for (i, j) in list_route:
+        prob += truck_stock_onRoad[(i,j)] <= dicts_route[(u,v)]['capacity']
+
     for d in list_depot:
         prob += depot_stk[d] <= 0
-    #dechager
+
     for c in list_customer:
         prob += customer_need[c] >= 0
-    # un client doit etre servi en totalité
+
+    for c in use_customer:
+        prob += use_customer[c] * customer_need[c] = 0
+
+    for (i, j) in list_route:
+        prob += pl.lpSum(use_road[(u,v)]) <= 1
 
     return prob
     return optval, roads_qty #, ...
