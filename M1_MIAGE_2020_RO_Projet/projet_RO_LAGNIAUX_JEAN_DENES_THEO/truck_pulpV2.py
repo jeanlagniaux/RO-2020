@@ -67,7 +67,7 @@ def def_truck_problem(graph, entete):
 
     #
 
-    prob += ( (use_road[i] * dicts_route[use_road[i]]['gas'] for i in list_route) + (use_road[i] * dicts_route[use_road[i]]['tax'] )
+    prob += (1000 * le nombre de gpu vendu) -( (use_road[i] * dicts_route[use_road[i]]['gas'] for i in list_route) + ( (use_road[i] * dicts_route[use_road[i]]['tax']) * le nb de GPU qui sont passé sur la route ) )
 
     # ------------------------------------------------------------------------ #
     # The constraints
@@ -75,7 +75,7 @@ def def_truck_problem(graph, entete):
 
     #si on supprime un ou plusieur stock/depot alors le nombre de stock/depot utilisée doit etre inférieur ou égale au nombre max de stock/depot
     for c in list_customer:
-        prob += use_customer[c] <= int(entete[2])
+        prob += (use_customer[c] <= int(entete[2])
     for d in list_depot:
         prob += use_depot[d] <= int(entete[3])
 
@@ -86,8 +86,8 @@ def def_truck_problem(graph, entete):
     for (u, v) in graph.edges():
         prob += truck_cap <= truck_stk_road_[(u,v)]
 
-    for (u, v) in graph.edges():
-        prob += pl.lpSum(road_is_used[(u,v)]) < 1
+    for (i, j) in list_route:
+        prob += road_is_used[(u,v)] <= 1
 
     #   on divise la contrainte en 2 contraintes relativement similaire.
     #charger
