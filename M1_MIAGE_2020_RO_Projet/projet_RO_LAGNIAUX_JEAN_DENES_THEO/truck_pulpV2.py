@@ -74,8 +74,10 @@ def def_truck_problem(graph, entete):
     # ------------------------------------------------------------------------ #
 
     #si on supprime un ou plusieur stock/depot alors le nombre de stock/depot utilisée doit etre inférieur ou égale au nombre max de stock/depot
-    prob += pl.lpSum(use_customer[i] for i in list_customer) <= int(entete[2])
-    prob += pl.lpSum(use_depot[i] for i in list_depot) <= int(entete[3])
+    for c in list_customer:
+        prob += use_customer[c] <= int(entete[2])
+    for d in list_depot:
+        prob += use_depot[d] <= int(entete[3])
 
     # stk du camion inf à la capacité de la route
     for (u, v) in graph.edges():
@@ -96,9 +98,6 @@ def def_truck_problem(graph, entete):
         prob += customer_need[c] >= 0
     # un client doit etre servi en totalité
 
-
-    prob += nbDepotLivrable <= nbDeDepot
-    prob += nbClientLivrable <= nbDeClient
     return prob
     return optval, roads_qty #, ...
 
