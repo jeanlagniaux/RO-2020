@@ -117,20 +117,21 @@ for val in graph.nodes():
         list_depot.append(val)
     else:
         list_customer.append(val)
-
 depot_stk = {}
 for i in list_depot:
     depot_stk[i] = graph.nodes[i]['stock']
+customer_need = {}
+for i in list_customer:
+    customer_need[i] = graph.nodes[i]['stock']
+dicts_route = {}
+for i, j in graph.edges():
+    dicts_route[i,j] = {'cap' : graph.edges[i,j]['capacity'], 'cost' : graph.edges[i,j]['Gas'] + graph.edges[i,j]['Tax']}
+list_route = [val for val in graph.edges()]
 
 customer_need = {}
 for i in list_customer:
     customer_need[i] = graph.nodes[i]['stock']
 
-list_route = [val for val in graph.edges()]
-dicts_routes = {}
-for i, j in list_route:
-    dicts_route[i,j] = {'cap' : graph.edges[i,j]['capacity'], 'cost' : graph.edges[i,j]['Gas'] + graph.edges[i,j]['Tax']}
-
-print(dicts_route)
-
-list_route = [val for val in graph.edges()]
+print(customer_need['C1'])
+for c in list_customer:
+    print(customer_need[c])

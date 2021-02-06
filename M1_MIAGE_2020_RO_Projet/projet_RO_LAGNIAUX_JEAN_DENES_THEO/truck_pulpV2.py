@@ -34,6 +34,7 @@ def def_truck_problem(graph, entete):
             list_depot.append(val)
         else:
             list_customer.append(val)
+
     depot_stk = {}
     for i in list_depot:
         depot_stk[i] = graph.nodes[i]['stock']
@@ -64,7 +65,7 @@ def def_truck_problem(graph, entete):
     prob += pl.lpSum(1000*([graph.nodes[list_customer[list_customer.index(cust)]]["stock"] for cust in list_customer]) * ([use_customer[i] for i in list_customer])) - pl.lpSum( ([road_is_used[i] for i in roads]) * ([graph.edges[u, v]['capacity'] for (u, v) in roads]))
     #prob += pl.LpMaximize(pl.lpSum(1000*customer_req*customer[utilisé])-pl.lpSum(road*road_cap[edge]))
 
-    # maximiser 1000 * nb GPU vendu ()
+    #
 
     prob += ( (use_road[i] * dicts_route[use_road[i]]['gas'] for i in list_route) + (use_road[i] * dicts_route[use_road[i]]['tax'] )
 
@@ -80,17 +81,19 @@ def def_truck_problem(graph, entete):
     for (u, v) in graph.edges():
         prob += truck_stk_road_[(u,v)] <= road_is_used[(u,v)]['capacity']
 
-    # for (u, v) in graph.edges():
-        #prob += truck_cap <= truck_stk_road_[(u,v)]
+    for (u, v) in graph.edges():
+        prob += truck_cap <= truck_stk_road_[(u,v)]
 
     for (u, v) in graph.edges():
         prob += pl.lpSum(road_is_used[(u,v)]) < 1
 
     #   on divise la contrainte en 2 contraintes relativement similaire.
     #charger
-    prob += deposit_stk <= 0
+    for d in list_depot:
+        prob += depot_stk[d] <= 0
     #dechager
-    prob += customer_req >= 0
+    for c in list_customer:
+        prob += customer_need[c] >= 0
     # un client doit etre servi en totalité
 
 
