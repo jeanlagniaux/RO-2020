@@ -34,25 +34,23 @@ def def_truck_problem(graph, entete):
             list_depot.append(val)
         else:
             list_customer.append(val)
-
     depot_stk = {}
     for i in list_depot:
         depot_stk[i] = graph.nodes[i]['stock']
     nbDepotLivrable = len(list_depot) - int(entete[3])
+
     use_depot = pl.LpVariable.dicts("Use_depot", list_depot, 0, 1, cat=pl.LpBinary)
 
     customer_need = {}
     for i in list_customer:
         customer_need[i] = graph.nodes[i]['stock']
-    use_customer = pl.LpVariable.dicts("Served_cust", list_customer, 0, 1, cat=pl.LpBinary)
 
-    prob += pl.lpSum(use_customer[i] for i in list_customer) <= int(entete[2])
-    prob += pl.lpSum(use_depot[i] for i in list_depot) <= int(entete[3])
+    use_customer = pl.LpVariable.dicts("Served_cust", list_customer, 0, 1, cat=pl.LpBinary)
 
     list_route = [val for val in graph.edges()]
     dicts_route = {}
-    for i, j in graph.edges():
-        dicts_route[i,j] = {'cap' : graph.edges[i,j]['capacity'], 'cost' : graph.edges[i,j]['Gas'] + graph.edges[i,j]['Tax']}
+    for i, j in list_route:
+        dicts_route[i,j] = {'cap' : graph.edges[i,j]['capacity'], 'gas' : graph.edges[i,j]['Gas'], 'tax' : graph.edges[i,j]['Tax']}
     use_road = pl.LpVariable.dicts("Use_road", list_route, 0, 1, cat=pl.LpBinary)
 
     truck_cap = entete[0]
@@ -63,11 +61,21 @@ def def_truck_problem(graph, entete):
     # ------------------------------------------------------------------------ #
     # The objective function
     # ------------------------------------------------------------------------ #
-    prob += pl.lpSum(1000*([graph.nodes[list_customer[list_customer.index(cust)]]["stock"] for cust in list_customer]) * ([customer_is_served[i] for i in list_customer])) - pl.lpSum( ([road_is_used[i] for i in roads]) * ([graph.edges[u, v]['capacity'] for (u, v) in roads]))
+    prob += pl.lpSum(1000*([graph.nodes[list_customer[list_customer.index(cust)]]["stock"] for cust in list_customer]) * ([use_customer[i] for i in list_customer])) - pl.lpSum( ([road_is_used[i] for i in roads]) * ([graph.edges[u, v]['capacity'] for (u, v) in roads]))
     #prob += pl.LpMaximize(pl.lpSum(1000*customer_req*customer[utilisé])-pl.lpSum(road*road_cap[edge]))
+
+    # maximiser 1000 * nb GPU vendu ()
+
+    prob += ( (use_road[i] * dicts_route[use_road[i]]['gas'] for i in list_route) + (use_road[i] * dicts_route[use_road[i]]['tax'] )
+
     # ------------------------------------------------------------------------ #
     # The constraints
     # ------------------------------------------------------------------------ #
+
+    #si on supprime un ou plusieur stock/depot alors le nombre de stock/depot utilisée doit etre inférieur ou égale au nombre max de stock/depot
+    prob += pl.lpSum(use_customer[i] for i in list_customer) <= int(entete[2])
+    prob += pl.lpSum(use_depot[i] for i in list_depot) <= int(entete[3])
+
     # stk du camion inf à la capacité de la route
     for (u, v) in graph.edges():
         prob += truck_stk_road_[(u,v)] <= road_is_used[(u,v)]['capacity']
