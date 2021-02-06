@@ -72,17 +72,17 @@ def def_truck_problem(graph, entete):
     for (u, v) in graph.edges():
         prob += truck_stk_road_[(u,v)] <= road_is_used[(u,v)]['capacity']
 
-    for (u, v) in graph.edges():
-        prob += truck_cap <= truck_stk_road_[(u,v)]
+    # for (u, v) in graph.edges():
+        #prob += truck_cap <= truck_stk_road_[(u,v)]
 
     for (u, v) in graph.edges():
         prob += pl.lpSum(road_is_used[(u,v)]) < 1
 
     #   on divise la contrainte en 2 contraintes relativement similaire.
     #charger
-    prob += pl.lpSum(deposit_stk) <= 0
+    prob += deposit_stk <= 0
     #dechager
-    prob += pl.lpSum(customer_req) >= 0
+    prob += customer_req >= 0
     # un client doit etre servi en totalité
 
 
