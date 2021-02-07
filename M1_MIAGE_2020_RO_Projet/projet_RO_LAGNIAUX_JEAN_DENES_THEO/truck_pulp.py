@@ -82,13 +82,13 @@ def def_truck_problem(graph, entete):
     for (i,j) in list_route:
         prob += truck_stock_onRoad[(i,j)] <= dicts_route[(u,v)]['capacity']
 
-    # contrainte
+    # contrainte de mise à jour des stocks des dépots
     for d in list_depot:
-        prob += depot_stk[d] <= 0
+        prob += use_depot[d] * depot_stk[d] <= 0
 
-    # contrainte
+    # contrainte de mise à jour des besoins client
     for c in list_customer:
-        prob += customer_need[c] >= 0
+        prob += use_customer[c] * customer_need[c] >= 0
 
     # si on a servi un client alors il la ete dans la totalite
     for c in use_customer:
