@@ -62,10 +62,8 @@ def def_truck_problem(graph, entete):
 
     #erruer vient peut etre du fait qu'on déclare plusieur fois i , j
 
-    prob += pl.lpSum(1000 * use_customer[c] * customer_need[c] for c in list_customer) - pl.lpSum((use_road[(i, j)] * dicts_route[use_road[(i,j)]]['gas'] for (i, j) in list_route) + ( use_road[(i, j)] * dicts_route[use_road[(i, j)]]['tax'] * truck_stock_onRoad[(i, j)] for (i, j) in list_route))
-    #prob += pl.lpSum(1000 * use_customer[c] * customer_need[c] for c in list_customer) - pl.lpSum([(use_road[(i, j)] * dicts_route[use_road[(i,j)]]['gas'] + ( use_road[(i, j)] * dicts_route[use_road[(i, j)]]['tax'] * truck_stock_onRoad[(i, j)]) for (i, j) in list_route])
-
-    #prob += pl.lpSum(1000 * use_customer[c] * customer_need[c] for c in list_customer) - pl.lpSum([(use_road[(i, j)] * dicts_route[use_road[(i,j)]]['gas']) + (use_road[(i, j)] * dicts_route[use_road[[(i, j)]]['tax'] * truck_stock_onRoad[(i, j)]  for i,j in list_route])
+    #prob += pl.lpSum(1000 * use_customer[c] * customer_need[c] for c in list_customer) - pl.lpSum((use_road[(i, j)] * dicts_route[use_road[(i,j)]]['gas'] for (i, j) in list_route) + ( use_road[(i, j)] * dicts_route[use_road[(i, j)]]['tax'] * truck_stock_onRoad[(i, j)] for (i, j) in list_route))
+    prob += pl.lpSum(1000 * use_customer[c] * customer_need[c] for c in list_customer) - pl.lpSum((use_road[(i, j)] * dicts_route[use_road[(i,j)]]['gas'] + ( use_road[(i, j)] * dicts_route[use_road[(i, j)]]['tax'] * truck_stock_onRoad[(i, j)]) for (i, j) in list_route))
 
     # ------------------------------------------------------------------------ #
     # The constraints
@@ -74,7 +72,6 @@ def def_truck_problem(graph, entete):
     #si on supprime un ou plusieur stock/depot alors le nombre de stock/depot utilisée doit etre inférieur ou égale au nombre max de stock/depot
     for c in list_customer:
         prob += use_customer[c] <= int(entete[2])
-
 
     for d in list_depot:
         prob += use_depot[d] <= int(entete[3])
@@ -122,16 +119,19 @@ def solve_truck_problem(file_path):
     # Print the solver output
     # ------------------------------------------------------------------------ #
     print()
-    print('solve_max_flow')
+    print('solvre truck problem')
     print()
     print(f'Status:\n{pl.LpStatus[prob.status]}')
     print()
-    print('-')
-    print()
+    objectiv = prob.objective
     # Each of the variables is printed with it's resolved optimum value
+    dicts_var = {}
     for v in prob.variables():
-        print(v.name, '=', v.varValue)
-    print()
+        dicts_var[v.name] = v.varValue
+
+    return objectiv, dicts_var
+
+
 if __name__ == '__main__':
     path = Path(__file__)
     print(path)
