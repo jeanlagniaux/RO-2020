@@ -14,7 +14,7 @@ import pulp as pl
 import networkx as nx
 import matplotlib.pyplot as plt
 from pathlib import Path
-from Reader import extract_graph
+from projet_RO_LAGNIAUX_JEAN_DENES_THEO.Reader import extract_graph
 # ---------------------------------------------------------------------------------------------------#
 #                             ===== TEMPLATE PROJET ====                                             #
 # ---------------------------------------------------------------------------------------------------#
