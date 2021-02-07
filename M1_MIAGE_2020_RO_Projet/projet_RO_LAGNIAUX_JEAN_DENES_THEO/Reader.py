@@ -7,6 +7,7 @@ import pulp as pl
 import networkx as nx
 import matplotlib.pyplot as plt
 from pathlib import Path
+from termcolor import colored
 
 def extract_graph(file_path):
     graph = nx.DiGraph()
@@ -67,4 +68,6 @@ nx.draw(graph)
 # decomenter la ligne ci dessous pour afficher le graph avec matplotlib
 #plt.show()
 nx.write_graphml(graph, 'projet_RO_LAGNIAUX_JEAN_DENES_THEO\output_files\graphDenesLagniaux.graphml')
-print('le graph a été créer et on peut le trouve dans le fichier => output_files')
+print()
+print(colored('le graph a été créer et on peut le trouve dans le fichier => output_files', 'red'))
+print()
