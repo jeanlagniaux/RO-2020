@@ -123,6 +123,9 @@ for i in list_depot:
 customer_need = {}
 for i in list_customer:
     customer_need[i] = graph.nodes[i]['stock']
+
+for i in customer_need:
+    print(customer_need[i])
 dicts_route = {}
 for i, j in graph.edges():
     dicts_route[i,j] = {'cap' : graph.edges[i,j]['capacity'], 'cost' : graph.edges[i,j]['Gas'] + graph.edges[i,j]['Tax']}

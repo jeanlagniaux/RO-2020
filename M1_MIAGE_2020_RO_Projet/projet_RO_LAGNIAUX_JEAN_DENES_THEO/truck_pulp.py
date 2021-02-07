@@ -14,7 +14,7 @@ import pulp as pl
 import networkx as nx
 import matplotlib.pyplot as plt
 from pathlib import Path
-from reader import extract_graph
+from Reader import extract_graph
 # ---------------------------------------------------------------------------------------------------#
 #                             ===== TEMPLATE PROJET ====                                             #
 # ---------------------------------------------------------------------------------------------------#
@@ -26,9 +26,6 @@ def def_truck_problem(graph, entete):
     # ------------------------------------------------------------------------ #
     # The variables
     # ------------------------------------------------------------------------ #
-    #roads = graph.edges()
-    #road_is_used = [pl.LpVariable(f'used_{u}_{v}', cat=pl.LpBinary) for (u, v) in roads]
-    road_is_used = pl.LpVariable.dicts('i', graph.edges(), cat=pl.LpBinary)
 
     list_depot = []
     list_customer = []
@@ -37,42 +34,72 @@ def def_truck_problem(graph, entete):
             list_depot.append(val)
         else:
             list_customer.append(val)
-    customer_is_served = [pl.LpVariable(f'served_{i}', cat=pl.LpBinary) for i in list_customer]
-    depot_is_used = [pl.LpVariable(f'used_{i}', cat=pl.LpBinary) for i in list_depot]
 
-    truck_cap = entete[0]
-
-    #truck_stk = [pl.LpVariable(f'route_{u}_{v}', lowBound=0, cat=pl.LpInteger) for (u, v) in roads]
-    truck_stk_road_ = pl.LpVariable.dicts('i', graph.edges(), cat=pl.LpInteger)
-
+    depot_stk = {}
+    for i in list_depot:
+        depot_stk[i] = graph.nodes[i]['stock']
     nbDepotLivrable = len(list_depot) - int(entete[3])
-    nbDepotLivrable = len(list_customer) - int(entete[2])
+
+    use_depot = pl.LpVariable.dicts("Use_depot", list_depot, 0, 1, cat=pl.LpBinary)
+
+    customer_need = {}
+    for i in list_customer:
+        customer_need[i] = graph.nodes[i]['stock']
+
+    use_customer = pl.LpVariable.dicts("Served_cust", list_customer, 0, 1, cat=pl.LpBinary)
+
+    list_route = [val for val in graph.edges()]
+    dicts_route = {}
+    for i,j in list_route:
+        dicts_route[i,j] = {'cap' : graph.edges[i,j]['capacity'], 'gas' : graph.edges[i,j]['Gas'], 'tax' : graph.edges[i,j]['Tax']}
+    use_road = pl.LpVariable.dicts("Use_road", list_route, 0, 1, cat=pl.LpBinary)
+
+
+    for i in use_road:
+        print(i)
+
+    truck_stock_onRoad = pl.LpVariable.dicts('raod', list_route, cat=pl.LpInteger)
+
     # ------------------------------------------------------------------------ #
     # The objective function
     # ------------------------------------------------------------------------ #
-    prob += pl.lpSum(1000*(int([graph.nodes[list_customer[list_customer.index(cust)]]["stock"] for cust in list_customer])) * ([customer_is_served[i] for i in list_customer])) - pl.lpSum( ([road_is_used[i] for i in roads]) * (int([graph.edges[u, v]['capacity'] for (u, v) in roads])))
-    #prob += pl.LpMaximize(pl.lpSum(1000*customer_req*customer[node])-pl.lpSum(road*road_cap[edge]))
+
+    #erruer vient peut etre du fait qu'on déclare plusieur fois i , j
+
+    #prob += pl.lpSum(1000 * use_customer[c] * customer_need[c] for c in list_customer) - pl.lpSum((use_road[(i, j)] * dicts_route[use_road[(i,j)]]['gas'] for (i, j) in list_route) + ( use_road[(i, j)] * dicts_route[use_road[(i, j)]]['tax'] * truck_stock_onRoad[(i, j)] for (i, j) in list_route))
+    #prob += pl.lpSum(1000 * use_customer[c] * customer_need[c] for c in list_customer) - pl.lpSum((use_road[(i,j)] * dicts_route[use_road[(i,j)]]['gas'] + ( use_road[(i,j)] * dicts_route[use_road[(i,j)]]['tax'] * truck_stock_onRoad[(i,j)]) for (i,j) in list_route))
+
+    prob += pl.lpSum(1000 * use_customer[c] * customer_need[c] for c in list_customer) - pl.lpSum(([i] * dicts_route[[i]['gas']] + ( [i]  * dicts_route[[i]['tax']] * truck_stock_onRoad[(i,j)]) for i in use_road))
     # ------------------------------------------------------------------------ #
     # The constraints
     # ------------------------------------------------------------------------ #
+
+    #si on supprime un ou plusieur stock/depot alors le nombre de stock/depot utilisée doit etre inférieur ou égale au nombre max de stock/depot
+    for c in list_customer:
+        prob += use_customer[c] <= int(entete[2])
+
+    for d in list_depot:
+        prob += use_depot[d] <= int(entete[3])
+
+    for (i,j) in list_route:
+        prob += truck_stock_onRoad[(i,j)] <= entete[0]
+
     # stk du camion inf à la capacité de la route
-    for (u, v) in graph.edges():
-        prob += truck_stk_road_[(u,v)] <= road_is_used[(u,v)]['capacity']
+    for (i,j) in list_route:
+        prob += truck_stock_onRoad[(i,j)] <= dicts_route[(u,v)]['capacity']
 
-    for (u, v) in graph.edges():
-        prob += truck_cap <= truck_stk_road_[(u,v)]
+    for d in list_depot:
+        prob += depot_stk[d] <= 0
 
-    for (u, v) in graph.edges():
-        prob += pl.lpSum(road_is_used[(u,v)]) < 1
+    for c in list_customer:
+        prob += customer_need[c] >= 0
 
-    #   on divise la contrainte en 2 contraintes relativement similaire.
-    #charger
-    prob += pl.lpSum(deposit_stk) <= 0
-    #dechager
-    prob += pl.lpSum(customer_req) >= 0
-    # un client doit etre servi en totalité
-    prob += nbDepotLivrable <= nbDeDepot
-    prob += nbClientLivrable <= nbDeClient
+    for c in use_customer:
+        prob += use_customer[c] * customer_need[c] == 0
+
+    for (i,j) in list_route:
+        prob += pl.lpSum(use_road[(u,v)]) <= 1
+
     return prob
     return optval, roads_qty #, ...
 
@@ -97,16 +124,19 @@ def solve_truck_problem(file_path):
     # Print the solver output
     # ------------------------------------------------------------------------ #
     print()
-    print('solve_max_flow')
+    print('solvre truck problem')
     print()
     print(f'Status:\n{pl.LpStatus[prob.status]}')
     print()
-    print('-')
-    print()
+    objectiv = prob.objective
     # Each of the variables is printed with it's resolved optimum value
+    dicts_var = {}
     for v in prob.variables():
-        print(v.name, '=', v.varValue)
-    print()
+        dicts_var[v.name] = v.varValue
+
+    return objectiv, dicts_var
+
+
 if __name__ == '__main__':
     path = Path(__file__)
     print(path)
