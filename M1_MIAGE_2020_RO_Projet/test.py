@@ -9,5 +9,5 @@ THIS_FILE_DIR = Path(__file__).parent.resolve()
 DATA_DIR = THIS_FILE_DIR / 'data'
 if __name__ == '__main__':
     instance_path = DATA_DIR / 'truck_instance_base.data'
-    print(instance_path)
     obj, dicts_var, truck_stock_onRoad  = solv.solve_truck_problem(instance_path)
+    print(obj, dicts_var, truck_stock_onRoad)
